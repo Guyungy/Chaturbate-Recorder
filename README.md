@@ -10,8 +10,9 @@
 需要使用Python3.5或更高版本。您可以从https://www.python.org/ downloads / release / python-352 /下载Python3.5.2。
 
 要安装所需的模块，请运行：
+
 ```
-python3.5 -m pip install streamlink bs4 lxml gevent
+pip install streamlink bs4 lxml gevent
 ```
 
 
