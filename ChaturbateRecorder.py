@@ -27,22 +27,29 @@ def cls():
     
 def readConfig():
     global setting
-
     Config.read(mainDir + '/config.conf')
+
+    # 从配置文件中读取各种设置
     setting = {
         'save_directory': Config.get('paths', 'save_directory'),
         'wishlist': Config.get('paths', 'wishlist'),
         'interval': int(Config.get('settings', 'checkInterval')),
-        'postProcessingCommand': Config.get('settings', 'postProcessingCommand'),
-        }
+        'postProcessingCommand': Config.get('settings', 'postProcessingCommand')
+    }
+
+    # 获取 postProcessingThreads，处理空值或缺少值的情况
     try:
-        setting['postProcessingThreads'] = int(Config.get('settings', 'postProcessingThreads'))
-    except ValueError:
-        if setting['postProcessingCommand'] and not setting['postProcessingThreads']:
-            setting['postProcessingThreads'] = 1
-    
-    if not os.path.exists(f'{setting["save_directory"]}'):
-        os.makedirs(f'{setting["save_directory"]}')
+        postProcessingThreads_str = Config.get('settings', 'postProcessingThreads').strip()
+        if postProcessingThreads_str:
+            setting['postProcessingThreads'] = int(postProcessingThreads_str)
+        else:
+            setting['postProcessingThreads'] = 1  # 默认值为1
+    except (configparser.NoOptionError, ValueError):
+        setting['postProcessingThreads'] = 1  # 默认值为1
+
+    # 如果保存目录不存在，则创建目录
+    os.makedirs(setting["save_directory"], exist_ok=True)
+
 
 def postProcess():
     while True:
